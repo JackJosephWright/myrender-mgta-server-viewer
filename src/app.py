@@ -182,35 +182,42 @@ query = f"""
     WHERE date BETWEEN '{start_time}' AND '{end_time}'
     GROUP BY color;
 """
-cursor.execute(query)
-data = cursor.fetchall()
 
-# Create a list of the deck names and win rates from your data
-decks, win_rates = zip(*[(deck_color, win_rate) for (color, total_games, total_wins, win_rate) in data for deck_color in deck_colors if color in deck_color])
+try:
+    cursor.execute(query)
+    data = cursor.fetchall()
+except:
+    data = []
 
-# Sort the deck names and win rates in descending order by win rate
-decks, win_rates = zip(*sorted(zip(decks, win_rates), key=lambda x: x[1], reverse=True))
+if len(data) > 0:
+    fig, ax = plt.subplots()
+    # Create a list of the deck names and win rates from your data
+    decks, win_rates = zip(*[(deck_color, win_rate) for (color, total_games, total_wins, win_rate) in data for deck_color in deck_colors if color in deck_color])
+    
+    # Sort the deck names and win rates in descending order by win rate
+    decks, win_rates = zip(*sorted(zip(decks, win_rates), key=lambda x: x[1], reverse=True))
 
-# Create a bar chart with custom colors based on the deck name
-fig, ax = plt.subplots()
-ax.bar(decks, win_rates, width=0.7, color=[deck_colors.get(deck, '#CCCCCC') for deck in decks])
+    # Create a bar chart with custom colors based on the deck name
+    ax.bar(decks, win_rates, width=0.7, color=[deck_colors.get(deck, '#CCCCCC') for deck in decks])
 
-# Add grid lines
-ax.grid(axis='y', linestyle='--', alpha=0.7)
+    # Add grid lines
+    ax.grid(axis='y', linestyle='--', alpha=0.7)
 
-# Set the title and axis labels
-ax.set_title('Win Rates by Deck (Last 2 Hours)', fontsize=16)
-ax.set_xlabel('Deck', fontsize=14)
-ax.set_ylabel('Win Rate (%)', fontsize=14)
+    # Set the title and axis labels
+    ax.set_title('Win Rates by Deck (Last 2 Hours)', fontsize=16)
+    ax.set_xlabel('Deck', fontsize=14)
+    ax.set_ylabel('Win Rate (%)', fontsize=14)
 
-# Rotate the x-axis labels if needed
-plt.xticks(rotation=45)
+    # Rotate the x-axis labels if needed
+    plt.xticks(rotation=45)
 
-# Increase font size of tick labels
-ax.tick_params(axis='both', labelsize=12)
+    # Increase font size of tick labels
+    ax.tick_params(axis='both', labelsize=12)
 
-# Set background color
-ax.set_facecolor('#F0F0F0')
+    # Set background color
+    ax.set_facecolor('#F0F0F0')
+else:
+    fig = None
 
 ## last accounts table
 
