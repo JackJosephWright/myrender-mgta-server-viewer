@@ -1,3 +1,4 @@
+import mysql.connector
 import dash
 from dash import dcc
 from dash import html
@@ -9,7 +10,6 @@ from dash.dependencies import Input, Output
 from datetime import datetime, timedelta
 import plotly.express as px
 ##os.chdir('tests')
-import mysql.connector
 import time
 db_config = {
     "host" : "mtgabot.mysql.database.azure.com",
